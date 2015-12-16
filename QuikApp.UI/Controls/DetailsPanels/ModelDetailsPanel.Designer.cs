@@ -47,6 +47,7 @@
             this.txbModelName.Name = "txbModelName";
             this.txbModelName.Size = new System.Drawing.Size(360, 20);
             this.txbModelName.TabIndex = 1;
+            this.txbModelName.TextChanged += new System.EventHandler(this.txbModelName_TextChanged);
             // 
             // ModelDetailsPanel
             // 

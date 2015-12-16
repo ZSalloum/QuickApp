@@ -7,11 +7,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console", "Console\Console.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickApp.Runtime.Common", "QuickApp.Runtime.Common\QuickApp.Runtime.Common.csproj", "{C55CC3D4-2540-4E3B-B8AC-2A3C8201EB2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickAppGenerator", "QuickAppGenerator\QuickAppGenerator.csproj", "{51293A95-955C-4D72-8E25-2F557779434A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickApp.Generator", "QuickAppGenerator\QuickApp.Generator.csproj", "{51293A95-955C-4D72-8E25-2F557779434A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuikApp.UI", "QuikApp.UI\QuikApp.UI.csproj", "{C4C98E3B-CBA6-48D3-A05A-F9592E3242A2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickApp", "QuickApp\QuickApp.csproj", "{F1E60F83-430F-42E4-B3C3-84F34C7FB3CF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F9394263-74F7-4E0A-BAB3-E2D469D533C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

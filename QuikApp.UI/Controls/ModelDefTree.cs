@@ -20,6 +20,19 @@ namespace QuikApp.UI.Controls
         public ModelDefTree()
         {
             InitializeComponent();
+            UIRepository.Instance.UIUpdater.PropertyChanged += UIUpdater_PropertyChanged;
+        }
+
+        void UIUpdater_PropertyChanged(object sender, PropertyChangedArgs args)
+        {
+            if (args.PropertyName == PropertyChangedArgs.NAME)
+            {
+                TreeNode node = FindNode(rootNode, args.SourceObject);
+                if (node != null)
+                {
+                    node.Text = args.NewValue.ToString();
+                }
+            }
         }
 
 
@@ -80,5 +93,48 @@ namespace QuikApp.UI.Controls
                 File.WriteAllText(String.Format("{0}.cs", modelNode.ModelDef.Name), srcCode);
             }
         }
+
+
+        private TreeNode FindNode(TreeNode node, Object targetDef)
+        {
+            if (node is RootModelDefNode)
+            {
+                RootModelDefNode rootNode = (RootModelDefNode)node;
+                if (rootNode.RootDef == targetDef)
+                {
+                    return rootNode;
+                }
+            }
+            else if (node is ModelDefNode)
+            {
+                ModelDefNode modelNode = (ModelDefNode)node;
+                if (modelNode.ModelDef == targetDef)
+                {
+                    return modelNode;
+                }
+            }
+            else if (node is PropertyDefNode)
+            {
+                PropertyDefNode propertyNode = (PropertyDefNode)node;
+                if (propertyNode.PropertyDef == targetDef)
+                {
+                    return propertyNode;
+                }
+            }
+
+
+            foreach (TreeNode n in node.Nodes)
+            {
+                TreeNode found = FindNode(n, targetDef);
+                if (found != null)
+                {
+                    return found;
+                }
+            }
+
+            return null;
+        }
     }
+
+  
 }

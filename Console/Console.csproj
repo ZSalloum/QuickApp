@@ -48,9 +48,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QuickAppGenerator\QuickAppGenerator.csproj">
+    <ProjectReference Include="..\QuickAppGenerator\QuickApp.Generator.csproj">
       <Project>{51293a95-955c-4d72-8e25-2f557779434a}</Project>
-      <Name>QuickAppGenerator</Name>
+      <Name>QuickApp.Generator</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

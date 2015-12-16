@@ -12,7 +12,7 @@ using QuickApp.Runtime.Common.Tools;
 
 namespace QuikApp.UI.Controls.DetailsPanels
 {
-    public partial class PropertyDetailsPanel : UserControl, IDetailsPanel
+    public partial class PropertyDetailsPanel : BaseDetailsPanel, IDetailsPanel
     {
         private PropertyDef propertyDef;
         private String[] types;
@@ -52,6 +52,7 @@ namespace QuikApp.UI.Controls.DetailsPanels
 
         public void UpdateDetails(object detailsObject)
         {
+            SuppressEvents();
             propertyDef = detailsObject as PropertyDef;
             if (propertyDef == null)
             {
@@ -59,6 +60,7 @@ namespace QuikApp.UI.Controls.DetailsPanels
             }
             txbPropertyName.Text = Str.NoNull(propertyDef.Name);
             cbxType.SelectedItem = propertyDef.Type;
+            ResumeEvents();
         }
 
         public Control DetailsControl
@@ -69,6 +71,10 @@ namespace QuikApp.UI.Controls.DetailsPanels
         private void txbPropertyName_TextChanged(object sender, EventArgs e)
         {
             propertyDef.Name = txbPropertyName.Text;
+            if (!AreEventsSuppressed())
+            {
+                UIRepository.Instance.UIUpdater.FirePropertyChangedEvent(this, new PropertyChangedArgs(propertyDef, PropertyChangedArgs.NAME, propertyDef.Name));
+            }
         }
 
         private void txbDescription_TextChanged(object sender, EventArgs e)

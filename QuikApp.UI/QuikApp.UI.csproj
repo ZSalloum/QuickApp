@@ -48,6 +48,9 @@
     <Compile Include="Controls\DetailsManagerControl.Designer.cs">
       <DependentUpon>DetailsManagerControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\DetailsPanels\BaseDetailsPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\DetailsPanels\ModelDetailsPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -96,9 +99,9 @@
       <Project>{c55cc3d4-2540-4e3b-b8ac-2a3c8201eb2f}</Project>
       <Name>QuickApp.Runtime.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\QuickAppGenerator\QuickAppGenerator.csproj">
+    <ProjectReference Include="..\QuickAppGenerator\QuickApp.Generator.csproj">
       <Project>{51293a95-955c-4d72-8e25-2f557779434a}</Project>
-      <Name>QuickAppGenerator</Name>
+      <Name>QuickApp.Generator</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
