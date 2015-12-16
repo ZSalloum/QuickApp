@@ -1,0 +1,108 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using QuickApp.Generator.Definitions;
+
+namespace QuickApp.Generator.Generators.CSharp
+{
+    public class CSharpDataClassGenerator : BaseClassGenerator
+    {
+
+        public CSharpDataClassGenerator(ModelDef modelDef) : base(modelDef)
+        {
+        }
+
+
+        protected override void GenerateUsings()
+        {
+            String[] usings = FindUsings();
+
+            WriteLine("using System;");
+
+            if (usings != null)
+            {
+                foreach (var ns in usings)
+                {
+                    WriteLineFormat("using {0};", ns);
+                }
+            }
+        }
+
+        protected override void GenerateNamespaceHeader()
+        {
+            WriteLineFormat("namespace {0} {{", modelDef.Namespace);
+        }
+
+        protected override void GenerateNamespaceTail()
+        {
+            WriteLine("}");
+        }
+
+        protected override void GenerateClassHeader()
+        {
+            WriteFormat("public class {0}", modelDef.DataClassName);
+            if (!String.IsNullOrWhiteSpace(modelDef.BaseClass))
+            {
+                WriteFormat(": {0}Data ", modelDef.BaseClass);
+            }
+            WriteLine("{");
+        }
+
+        protected override void GenerateClassTail()
+        {
+            WriteLine("}");
+        }
+
+        protected override void GenerateFields()
+        {
+        }
+
+        protected override void GenerateConstructors()
+        {
+        }
+
+        protected override void GenerateProperties()
+        {
+            if (modelDef.Properties != null)
+            {
+                foreach (var p in modelDef.Properties)
+                {
+                    CSharpDataClassPropertyGenerator propGen = new CSharpDataClassPropertyGenerator(modelDef, p, indentlevel);
+                    propGen.Generate(writer);
+                    GenerateEmptyLines(2);
+                }
+            }
+        }
+
+        protected override void GenerateCommonPublicMethods()
+        {
+
+        }
+
+        protected override void GenerateCommonPrivateMethods()
+        {
+        }
+
+        private String[] FindUsings()
+        {
+            Dictionary<String, int> usings = new Dictionary<string, int>();
+            if (modelDef.Properties != null)
+            {
+                foreach (var p in modelDef.Properties)
+                {
+                    String t = p.Type;
+                    int index = t.LastIndexOf('.');
+                    if (index > -1)
+                    {
+                        t = t.Substring(0, index);
+                        usings[t] = 1;
+                    }
+                }
+            }
+            return usings.Keys.ToArray();
+        }
+    }
+}

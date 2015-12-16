@@ -1,0 +1,81 @@
+﻿using QuickApp.Generator.Definitions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace QuickApp.Generator.Generators.CSharp
+{
+    public class CSharpWrapperClassPropertyGenerator : BasePropertyGenerator
+    {
+
+
+        public CSharpWrapperClassPropertyGenerator(ModelDef modelDef, PropertyDef propDef, int indentLevel)
+            : base(modelDef, propDef, indentLevel)
+        {
+        }
+
+        protected override void GenerateAttributes()
+        {
+        }
+
+        protected override void GeneratePropertyHeader()
+        {
+            WriteLineFormat("public {0} {1} {{", propDef.Type, propDef.Name);
+        }
+
+        protected override void GeneratePropertyTail()
+        {
+            WriteLine("}");
+        }
+
+        protected override void GenerateGet()
+        {
+            IncIndentLevel();
+
+            WriteLineFormat("get {{ return data.{0}; }}", propDef.Name);
+
+            DecIndentLevel();
+        }
+
+
+        protected override void GenerateValidator()
+        {
+            WriteLineFormat("if(!Validate{0}(data.{0}, value)) return;", propDef.Name);
+        }
+
+        protected override void GenerateUndo()
+        {
+            WriteLineFormat("app.UndoManager.PushModified(this, {0}, data.{1});", propDef.ConstantPropertyName, propDef.Name);
+        }
+        
+        protected override void GenerateSetValue()
+        {
+            WriteLineFormat("data.{0} = value;", propDef.Name);
+            WriteLine("IncChangeCount();");
+        }
+
+        protected override void GenerateCustomHandling()
+        {
+            WriteLineFormat("Handle{0}(value);", propDef.Name);
+        }
+
+        
+        protected override void GenerateBubbleEvent()
+        {
+            WriteLineFormat("Parent.OnChildPropertyChanged(this, {0}, oldValue, value);", propDef.ConstantPropertyName);
+        }
+
+        protected override void GenerateChangeEvent()
+        {
+            WriteLineFormat("OnPropertyChanged(this, {0}, oldValue, value);", propDef.ConstantPropertyName);
+        }
+
+        protected override void StoreOldValue()
+        {
+            WriteLineFormat(true, "{0} oldValue = data.{1};", propDef.Type, propDef.Name);
+        }
+
+    }
+}

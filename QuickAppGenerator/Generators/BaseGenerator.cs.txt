@@ -1,0 +1,124 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace QuickApp.Generator.Generators
+{
+    public class BaseGenerator
+    {
+        protected int indentlevel = 0;
+        protected TextWriter writer;
+
+        protected void SetWriter(TextWriter w)
+        {
+            this.writer = w;
+        }
+
+        protected void Write(String str)
+        {
+            Write(true, str);
+        }
+
+
+        protected void Write(bool indent, String str)
+        {
+            if (indent)
+            {
+                GenerateIndentation();
+            }
+            writer.Write(str);
+        }
+
+
+        protected void WriteLine(String str)
+        {
+            WriteLine(true, str);
+        }
+
+
+        protected void WriteLine(bool indent, String str)
+        {
+            if (indent)
+            {
+                GenerateIndentation();
+            }
+            writer.WriteLine(str);
+        }
+
+        protected void WriteFormat(String format, params Object[] args)
+        {
+            WriteFormat(true, format, args);
+        }
+
+
+        protected void WriteFormat(bool indent, String format, params Object[] args)
+        {
+            if (indent)
+            {
+                GenerateIndentation();
+            }
+            writer.Write(String.Format(format, args));
+        }
+
+        protected void WriteLineFormat(String format, params Object[] args)
+        {
+            WriteLineFormat(true, format, args);
+        }
+
+        protected void WriteLineFormat(bool indent, String format, params Object[] args)
+        {
+            if (indent)
+            {
+                GenerateIndentation();
+            }
+            writer.WriteLine(String.Format(format, args));
+        }
+
+        protected void GenerateEmptyLines(int n)
+        {
+            if (n > 0)
+            {
+                for (int i = 0; i < n; i++)
+                {
+                    writer.WriteLine();
+                }
+            }
+        }
+
+        protected void GenerateIndentation()
+        {
+            for (int i = 0; i < indentlevel; i++)
+            {
+                writer.Write('\t');
+            }
+        }
+
+        protected void ResetIndentLevel()
+        {
+            indentlevel = 0;
+        }
+
+        protected void IncIndentLevel()
+        {
+            IncIndentLevel(1);
+        }
+
+        protected void DecIndentLevel()
+        {
+            DecIndentLevel(1);
+        }
+
+        protected void IncIndentLevel(int n)
+        {
+            indentlevel += n;
+        }
+
+        protected void DecIndentLevel(int n)
+        {
+            indentlevel -= n;
+        }
+    }
+}

@@ -1,0 +1,80 @@
+﻿using QuickApp.Generator.Definitions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace QuickApp.Generator.Generators.CSharp
+{
+    public class CSharpDataClassPropertyGenerator : BasePropertyGenerator
+    {
+        public CSharpDataClassPropertyGenerator(ModelDef modelDef, PropertyDef propDef, int indentLevel)
+            : base(modelDef, propDef, indentLevel)
+        {
+        }
+
+        protected override void GenerateAttributes()
+        {
+        }
+
+        protected override void GeneratePropertyHeader()
+        {
+            WriteLineFormat("public {0} {1} {{", propDef.Type, propDef.Name);
+        }
+
+        protected override void GeneratePropertyTail()
+        {
+            WriteLine("}");
+        }
+
+        protected override void GenerateGet()
+        {
+            IncIndentLevel();
+
+            WriteLine("get;");
+
+            DecIndentLevel();
+        }
+
+
+        protected override void GenerateValidator()
+        {
+        }
+
+        protected override void GenerateSet()
+        {
+            IncIndentLevel();
+
+            WriteLine("set;");
+
+            DecIndentLevel();
+        }
+
+        protected override void GenerateSetValue()
+        {
+
+        }
+
+        protected override void GenerateCustomHandling()
+        {
+        }
+
+        protected override void GenerateUndo()
+        {
+        }
+
+        protected override void GenerateBubbleEvent()
+        {
+        }
+
+        protected override void GenerateChangeEvent()
+        {
+        }
+
+        protected override void StoreOldValue()
+        {
+        }
+
+    }
+}

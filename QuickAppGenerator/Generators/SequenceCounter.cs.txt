@@ -1,0 +1,44 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace QuickApp.Generator.Generators
+{
+    public class SequenceCounter
+    {
+        private int counter = 999;
+        private static SequenceCounter instance;
+
+        private SequenceCounter()
+        {
+
+        }
+
+        public static SequenceCounter Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new SequenceCounter();
+                }
+                return instance;
+            }
+        }
+
+        public int Next()
+        {
+            return ++counter;
+        }
+
+        public int Current
+        {
+            get
+            {
+                return counter;
+            }
+        }
+    }
+}

@@ -1,0 +1,296 @@
+﻿using QuickApp.Generator.Definitions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace QuickApp.Generator.Generators.CSharp
+{
+    public class CSharpWrapperClassGenerator : BaseClassGenerator
+    {
+        
+        public CSharpWrapperClassGenerator(ModelDef modelDef) : base(modelDef)
+        {
+        }
+
+        protected override void GenerateUsings()
+        {
+            String[] usings = FindUsings();
+
+            WriteLine("using System;");
+
+            if (usings != null)
+            {
+                foreach (var ns in usings)
+                {
+                    WriteLineFormat("using {0};", ns);
+                }
+            }
+        }
+
+        protected override void GenerateNamespaceHeader()
+        {
+            WriteLineFormat("namespace {0} {{", modelDef.Namespace);
+        }
+
+        protected override void GenerateNamespaceTail()
+        {
+            WriteLine("}");
+        }
+
+        protected override void GenerateClassHeader()
+        {
+            WriteFormat("public class {0} ", modelDef.WrapperClassName);
+            GenerateClassInheritanceHeader();
+            WriteLine(" {");
+        }
+
+        protected override void GenerateClassTail()
+        {
+            WriteLine("}");
+        }
+
+        protected override void GenerateFields()
+        {
+            GeneratePropertyConstants();
+            GenerateCommonFields();
+        }
+
+        protected override void GenerateConstructors()
+        {
+            WriteLineFormat("public {0}(IApplication app, {1} parent, {2} data) {{", modelDef.WrapperClassName, modelDef.CollectionClassName, modelDef.DataClassName);
+
+            IncIndentLevel();
+            WriteLine("this.app = app");
+            WriteLine("this.parent = parent");
+            WriteLine("this.data = data");
+            
+            DecIndentLevel();
+
+            WriteLine("}");
+        }
+
+        protected override void GenerateProperties()
+        {
+            GenerateDefinedProperties();
+            GenerateCommonProperties();
+        }
+
+        protected override void GenerateCommonPublicMethods()
+        {
+            if (modelDef.UndoSupport)
+            {
+                GenerateUndoMethod();
+                GenerateEmptyLines(2);
+            }
+
+            GenerateGetPropertyName();
+            GenerateEmptyLines(2);
+        }
+
+        protected override void GenerateCommonPrivateMethods()
+        {
+            GenerateChangeCountInc();
+            GenerateEmptyLines(2);
+
+            GenerateChangeCountDec();
+            GenerateEmptyLines(2);
+        }
+
+        #region private methods
+
+        private void GeneratePropertyConstants()
+        {
+            int val = 0;
+            if (modelDef.Properties != null)
+            {
+                foreach (var p in modelDef.Properties)
+                {
+                    val = SequenceCounter.Instance.Next();
+                    WriteLineFormat("public const int {0} = {1};", p.ConstantPropertyName, val);
+                }
+                GenerateEmptyLines(2);
+            }
+        }
+
+        private void GenerateCommonFields()
+        {
+            WriteLine("private IApplication app;");
+            WriteLineFormat("private {0} parent;", modelDef.CollectionClassName);
+
+            WriteLineFormat("private {0} data;", modelDef.DataClassName);
+            WriteLine("private int changeCount;");
+        }
+
+        private void GenerateDefinedProperties()
+        {
+            if (modelDef.Properties != null)
+            {
+                foreach (var p in modelDef.Properties)
+                {
+                    CSharpWrapperClassPropertyGenerator propGen = new CSharpWrapperClassPropertyGenerator(modelDef, p, indentlevel);
+                    propGen.Generate(writer);
+                    GenerateEmptyLines(2);
+                }
+            }
+        }
+
+        private void GenerateUndoMethod()
+        {
+            int undoCount = 0;
+            WriteLine("public void Undo() {");
+            IncIndentLevel();
+
+            WriteLine("UndoInfo info = app.UndoManager.Pop(this);");
+            WriteLine("if (info != null && info.ChangeType == ChangeType.Modified) {");
+            IncIndentLevel();
+
+            foreach(var p in modelDef.Properties){
+                if (p.UndoSupport)
+                {
+                    if (undoCount > 0)
+                    {
+                        WriteLine("else");
+                    }
+                    WriteLineFormat("if (info.SourceID == {0}) {{", p.ConstantPropertyName);
+
+                    IncIndentLevel();
+                    WriteLineFormat("data.{0} = ({1})info.OldValue;", p.Name, p.Type);
+                    WriteLineFormat("DecChangeCount()", p.Name, p.Type);
+                    DecIndentLevel();
+
+                    WriteLine("}");
+                    undoCount++;
+                }
+            }
+
+            DecIndentLevel();
+            WriteLine("}");
+
+            DecIndentLevel();
+            Write("}");
+
+        }
+
+        private void GenerateCommonProperties()
+        {
+            GenerateParentProperty();
+
+            GenerateEmptyLines(2);
+            GenerateApplicationProperty();
+
+            GenerateEmptyLines(2);
+            GenerateModifiedProperty();
+        }
+
+        private void GenerateParentProperty()
+        {
+            WriteLineFormat("public {0} Parent{{", modelDef.CollectionClassName);
+            IncIndentLevel();
+            WriteLine("get{ return parent; }");
+            DecIndentLevel();
+            WriteLine("}");
+        }
+
+        private void GenerateApplicationProperty()
+        {
+            WriteLine("public IApplication Application{");
+            IncIndentLevel();
+            WriteLine("get{ return app; }");
+            DecIndentLevel();
+            WriteLine("}");
+        }
+
+        private void GenerateModifiedProperty()
+        {
+            WriteLine("public bool Modified{");
+            IncIndentLevel();
+            WriteLine("get{ return changeCount > 0; }");
+            DecIndentLevel();
+            WriteLine("}");
+        }
+
+        private void GenerateChangeCountInc()
+        {
+            WriteLine("private void IncChangeCount(){");
+            IncIndentLevel();
+            WriteLine("changeCount++;");
+            DecIndentLevel();
+            WriteLine("}");
+        }
+
+        private void GenerateChangeCountDec()
+        {
+            WriteLine("private void DecChangeCount(){");
+            IncIndentLevel();
+            WriteLine("changeCount = Math.Max(--changeCount, 0);");
+            DecIndentLevel();
+            WriteLine("}");
+        }
+
+        private void GenerateGetPropertyName()
+        {
+            WriteLine("public String GetPropertyName(int propertyID){");
+            IncIndentLevel();
+            WriteLine("switch(propertyID){");
+            IncIndentLevel();
+            foreach (var p in modelDef.Properties)
+            {
+                WriteLineFormat("case {0} : return \"{1}\";", p.ConstantPropertyName, p.Name);
+            }
+            DecIndentLevel();
+            WriteLine("}");
+            WriteLine("throw new ArgumentException(String.Format(\"Unknown propertyID: {0}\"), propertyID);");
+            DecIndentLevel();
+            WriteLine("}");
+        }
+
+        private void GenerateClassInheritanceHeader()
+        {
+            bool hasBaseClass = !String.IsNullOrWhiteSpace(modelDef.BaseClass);
+            int baseCount = 0;
+
+            if (modelDef.UndoSupport || hasBaseClass){
+                Write(" : ");
+            }
+
+            if (hasBaseClass)
+            {
+                WriteFormat(" {0} ", modelDef.BaseClass);
+                baseCount++;
+            }
+
+            if (modelDef.UndoSupport)
+            {
+                if (baseCount > 0)
+                {
+                    Write(", ");
+                }
+                Write("IUndoSupport");
+                baseCount++;
+            }
+        }
+
+        private String[] FindUsings()
+        {
+            Dictionary<String, int> usings = new Dictionary<string, int>();
+            if (modelDef.Properties != null)
+            {
+                foreach (var p in modelDef.Properties)
+                {
+                    String t = p.Type;
+                    int index = t.LastIndexOf('.');
+                    if (index > -1)
+                    {
+                        t = t.Substring(0, index);
+                        usings[t] = 1;
+                    }
+                }
+            }
+            return usings.Keys.ToArray();
+        }
+
+        #endregion private methods
+    }
+}

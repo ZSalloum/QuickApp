@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C4C98E3B-CBA6-48D3-A05A-F9592E3242A2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>QuikApp.UI</RootNamespace>
+    <AssemblyName>QuikApp.UI</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controls\CustomTreeNodes.cs" />
+    <Compile Include="Controls\DetailsManagerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\DetailsManagerControl.Designer.cs">
+      <DependentUpon>DetailsManagerControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\DetailsPanels\ModelDetailsPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\DetailsPanels\ModelDetailsPanel.Designer.cs">
+      <DependentUpon>ModelDetailsPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\DetailsPanels\PropertyDetailsPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\DetailsPanels\PropertyDetailsPanel.Designer.cs">
+      <DependentUpon>PropertyDetailsPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\DetailsPanels\RootDetailsPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\DetailsPanels\RootDetailsPanel.Designer.cs">
+      <DependentUpon>RootDetailsPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\IDetailsPanel.cs" />
+    <Compile Include="Controls\ModelDefTree.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ModelDefTree.Designer.cs">
+      <DependentUpon>ModelDefTree.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\UIUpdater.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UIRepository.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Controls\DetailsManagerControl.resx">
+      <DependentUpon>DetailsManagerControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\DetailsPanels\ModelDetailsPanel.resx">
+      <DependentUpon>ModelDetailsPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\DetailsPanels\PropertyDetailsPanel.resx">
+      <DependentUpon>PropertyDetailsPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ModelDefTree.resx">
+      <DependentUpon>ModelDefTree.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\QuickApp.Runtime.Common\QuickApp.Runtime.Common.csproj">
+      <Project>{c55cc3d4-2540-4e3b-b8ac-2a3c8201eb2f}</Project>
+      <Name>QuickApp.Runtime.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QuickAppGenerator\QuickAppGenerator.csproj">
+      <Project>{51293a95-955c-4d72-8e25-2f557779434a}</Project>
+      <Name>QuickAppGenerator</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

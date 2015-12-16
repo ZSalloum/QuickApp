@@ -1,0 +1,78 @@
+﻿using QuickApp.Generator.Definitions;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace QuickApp.Generator.Generators
+{
+    public abstract class BaseClassGenerator : BaseGenerator, IClassGenerator
+    {
+        protected ModelDef modelDef;
+
+        public BaseClassGenerator(ModelDef modelDef)
+        {
+            this.modelDef = modelDef;
+        }
+        
+        public virtual void Generate(TextWriter wrt)
+        {
+            SetWriter(wrt);
+
+            ResetIndentLevel();
+            GenerateUsings();
+
+            GenerateEmptyLines(2);
+            GenerateNamespaceHeader();
+           
+            IncIndentLevel();
+            GenerateClassHeader();
+
+            IncIndentLevel();
+            GenerateFields();
+
+            GenerateEmptyLines(2);
+            GenerateConstructors();
+
+            GenerateEmptyLines(2);
+            GenerateProperties();
+
+            GenerateEmptyLines(2);
+            GenerateCommonPublicMethods();
+
+            GenerateEmptyLines(2);
+            GenerateCommonPrivateMethods();
+
+            GenerateEmptyLines(2);
+
+            DecIndentLevel();
+            GenerateClassTail();
+
+            DecIndentLevel();
+            GenerateNamespaceTail();
+
+
+        }
+
+
+        protected abstract void GenerateUsings();
+
+        protected abstract void GenerateNamespaceHeader();
+        protected abstract void GenerateNamespaceTail();
+
+        protected abstract void GenerateClassHeader();
+        protected abstract void GenerateClassTail();
+
+        protected abstract void GenerateFields();
+        protected abstract void GenerateConstructors();
+
+        protected abstract void GenerateProperties();
+        protected abstract void GenerateCommonPublicMethods();
+
+        protected abstract void GenerateCommonPrivateMethods();
+
+
+    }
+}

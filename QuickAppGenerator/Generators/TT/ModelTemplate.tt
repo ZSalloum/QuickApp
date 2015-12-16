@@ -1,0 +1,30 @@
+﻿<#@ template language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="QuickApp.Generator.Definitions" #>
+
+
+public class <#= model.Name #> {
+	
+	<#
+	foreach(var p in model.Properties){#>
+
+	public virtual <#=p.Type#> <#=p.Name#> {
+		<#GenerateGetProperty(p);#>
+		set;
+	}
+
+	<#}
+	#>
+}
+
+<#+
+
+private void GenerateGetProperty(PropertyDef p){
+	WriteLine("get{{return m_{0};}}", p.Name.ToLower());
+
+}
+#>
+

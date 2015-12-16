@@ -1,0 +1,116 @@
+﻿using QuickApp.Generator.Definitions;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace QuickApp.Generator.Generators
+{
+    public abstract class BasePropertyGenerator : BaseGenerator, IPropertyGenerator
+    {
+        protected PropertyDef propDef;
+        protected ModelDef modelDef;
+
+        public BasePropertyGenerator(ModelDef modelDef, PropertyDef propDef, int indentLevel)
+        {
+            this.modelDef = modelDef;
+            this.propDef = propDef;
+            this.indentlevel = indentLevel;
+        }
+
+        public virtual void Generate(TextWriter w)
+        {
+            SetWriter(w);
+
+            GenerateAttributes();
+            GeneratePropertyHeader();
+
+            GenerateGet();
+            GenerateSet();
+
+            GeneratePropertyTail();
+        }
+
+        protected abstract void GenerateAttributes();
+        protected abstract void GeneratePropertyHeader();
+        protected abstract void GeneratePropertyTail();
+
+        protected abstract void GenerateGet();
+
+        protected virtual void GenerateSet()
+        {
+
+            IncIndentLevel();
+            WriteLine(true, "set {");
+
+            IncIndentLevel();
+
+            if (propDef.ValidatesInput)
+            {
+                GenerateValidator();
+            }
+
+            //if (propDef.UndoSupport && modelDef.UndoSupport)
+            //{
+            //    GenerateEmptyLines(1);
+            //    GenerateUndo();
+            //}
+
+            if (ShouldStoreOldValue)
+            {
+                GenerateEmptyLines(1);
+                StoreOldValue();
+            }
+
+            GenerateEmptyLines(1);
+            GenerateSetValue();
+
+            if (propDef.CustomHandling)
+            {
+                GenerateEmptyLines(1);
+                GenerateCustomHandling();
+            }
+
+            if (propDef.BubblesChangeEvent)
+            {
+                GenerateEmptyLines(1);
+                GenerateBubbleEvent();
+            }
+
+            //if (propDef.RaisesChangeEvent)
+            //{
+            //    GenerateEmptyLines(1);
+            //    GenerateChangeEvent();
+            //}
+
+            DecIndentLevel();
+
+            WriteLine(true, "}");
+            DecIndentLevel();
+        }
+
+        private bool ShouldStoreOldValue
+        {
+            get
+            {
+                return propDef.RaisesChangeEvent || propDef.BubblesChangeEvent;
+            }
+        }
+
+
+        protected abstract void StoreOldValue();
+
+        protected abstract void GenerateValidator();
+
+        protected abstract void GenerateSetValue();
+        protected abstract void GenerateCustomHandling();
+            
+        protected abstract void GenerateUndo();
+
+        protected abstract void GenerateBubbleEvent();
+        protected abstract void GenerateChangeEvent();
+
+    }
+}
