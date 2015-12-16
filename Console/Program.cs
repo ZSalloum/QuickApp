@@ -67,6 +67,10 @@ namespace Console
             return def;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pdef"></param>
         private static  void SetAllOptions(PropertyDef pdef)
         {
             pdef.BubblesChangeEvent = true;
